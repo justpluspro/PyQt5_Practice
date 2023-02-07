@@ -1,8 +1,11 @@
 """
 视频下载工具
 """
+import json
 import sys
+import time
 
+from download_thread import DownloadThread
 import requests
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
@@ -14,8 +17,10 @@ class App(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.download_table = None
         self.download_url = None
         self.download_btn = None
+        self.download_thread = DownloadThread("")
         self.setWindowTitle("资源下载工具")
         self.resize(1080, 720)
         self.init_ui()
@@ -27,6 +32,8 @@ class App(QWidget):
         self.download_url.setPlaceholderText('请输入下载地址，以 http 开头')
         top_layout.addWidget(self.download_url)
         top_layout.addWidget(self.download_btn)
+        # 设置布局在上面
+        top_layout.setAlignment(Qt.AlignTop)
 
         self.download_table = QTableWidget()
         font = QFont('微软雅黑')
@@ -50,31 +57,27 @@ class App(QWidget):
         self.setLayout(main_layout)
 
         """绑定点击事件"""
-        self.download_btn.clicked.connect(lambda: self.start_download(self.download_url))
+        self.download_btn.clicked.connect(self.start_download)
 
-    def start_download(self, download_url):
-        url = download_url.text()
+    def start_download(self):
+        self.download_thread.download_url = self.download_url.text()
+        self.download_thread.start()
+
+        """将线程的触发器关联到指定方法上去"""
+        self.download_thread.trigger.connect(self.display_progress)
+
+    def display_progress(self, args):
+        # print('收到线程执行信号. ', args)
+        data = json.loads(args)
         row_count = self.download_table.rowCount()
-        # data = {url, '名称', '0%'}
-        self.download_table.setItem(row_count + 1, 0, QTableWidgetItem(url))
-        self.download_table.setItem(row_count + 1, 1, QTableWidgetItem('名称'))
-        self.download_table.setItem(row_count + 1, 2, QTableWidgetItem('0%'))
-
-        print(url)
-        """stream=True 表示使用流式下载"""
-        response = requests.get(url, stream=True)
-        total_length = int(response.headers.get('Content-Length'))
-        chunk_size = 1024
-        offset = 0
-        with open('video.mp4', "wb") as file:
-            for chunk in response.iter_content(chunk_size=chunk_size):
-                if chunk:
-                    offset += chunk_size
-                    file.write(chunk)
-                    download_progress = '%.2f' % ((offset / total_length) * 100)
-                    print(f'总大小: {total_length}')
-                    print(f'下载大小: {offset}')
-                    print(f'当前下载进度: {download_progress}')
+        # self.download_table.setRowCount(row_count + 1)
+        # self.download_table.setItem(row_count + 1, 0, QTableWidgetItem(data['url']))
+        # self.download_table.setItem(row_count + 1, 1, QTableWidgetItem('名称'))
+        # self.download_table.setItem(row_count + 1, 2, QTableWidgetItem(data['progress']))
+        #
+        url = data['url']
+        progress = data['progress']
+        print(f'下载地址{url} 下载进度{progress}')
 
 
 def main():
