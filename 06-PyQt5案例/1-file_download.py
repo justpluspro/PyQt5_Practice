@@ -25,8 +25,6 @@ class App(QWidget):
         self.download_url = QLineEdit()
         self.download_btn = QPushButton('下载')
         self.download_url.setPlaceholderText('请输入下载地址，以 http 开头')
-        self.download_url.setText(
-            'http://bj.download.cycore.cn/zhkt/2023/1/7/4/18/cf84c985-b19c-4db7-b702-963641ff24ba.mp4')
         top_layout.addWidget(self.download_url)
         top_layout.addWidget(self.download_btn)
 
