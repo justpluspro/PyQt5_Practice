@@ -50,6 +50,9 @@ class MainWindow(QWidget):
         print('pause', self.player.state())
         if self.player.state() == QMediaPlayer.PlayingState:
             self.player.pause()
+            self.pause_btn.setText('继续')
+        if self.player.state() == QMediaPlayer.PausedState:
+            pass
 
     def media_play_state_changed(self, state):
         if state == QMediaPlayer.PlayingState:
