@@ -2,6 +2,7 @@ import sys
 
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QTextEdit, QApplication
+
 from query_thread import QueryWeatherThread
 
 

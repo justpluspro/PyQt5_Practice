@@ -3,14 +3,13 @@
 """
 import json
 import sys
-import time
 
-from download_thread import DownloadThread
-import requests
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QApplication, QLineEdit, QHBoxLayout, QPushButton, QVBoxLayout, QTableWidget, \
-    QHeaderView, QTableWidgetItem
+    QHeaderView
+
+from download_thread import DownloadThread
 
 
 class App(QWidget):
