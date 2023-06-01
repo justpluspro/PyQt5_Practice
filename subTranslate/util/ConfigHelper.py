@@ -1,17 +1,20 @@
 import json
-
+import os
 
 class ConfigHelper:
+
+    def __init__(self):
+        self.config_path = os.path.join(os.environ['HOME'], 'config.json')
+
     """
     读取配置文件中的内容
     """
-
     def get_config(self):
         try:
-            with open('D:/config.json', 'r', encoding='UTF-8') as file:
+            with open(self.config_path, 'r', encoding='UTF-8') as file:
                 return json.loads(file.read())
         except FileNotFoundError as e:
-            with open('D:/config.json', 'w', encoding='UTF-8') as file:
+            with open(self.config_path, 'w', encoding='UTF-8') as file:
                 config_data = {
                     'translateProvider': [],
                     'sourceLang': [],
@@ -25,7 +28,7 @@ class ConfigHelper:
     """
 
     def update_config(self, config_data: dict):
-        with open('D:/config.json', 'w', encoding='UTF-8') as file:
+        with open(self.config_path, 'w', encoding='UTF-8') as file:
             file.write(json.dumps(config_data))
 
 
